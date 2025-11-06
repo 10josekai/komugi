@@ -1,16 +1,21 @@
 ---
-
+import BaseLayout from '../layouts/BaseLayout.astro';
+// Homeページに表示するセクション部品をすべてインポートします
+import WorksSection from '../components/WorksSection.astro';
+import AboutSection from '../components/AboutSection.astro';
+import PricingSection from '../components/PricingSection.astro'; 
+import ContactSection from '../components/ContactSection.astro';
 ---
-
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout
+  title="My Portfolio | Home"
+  description="こむぎのポートフォリオサイトへようこそ。シナリオライターとしての実績を掲載しています。"
+>
+  {/* Worksセクションを「ダイジェスト版」として呼び出します */}
+  <WorksSection mode="summary" /> 
+  
+  {/* Aboutセクションを呼び出します */}
+  <AboutSection />
+  <PricingSection />
+  <ContactSection />
+  
+</BaseLayout>

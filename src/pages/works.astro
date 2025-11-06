@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Card from '../components/Card.astro';
+import WorkModal from '../components/WorkModal.astro';
+import { load } from 'cheerio';
+
+// Workオブジェクトの「形」を定義
+type Work = {
+  href: string; // Worksページでは外部リンク
+  title: string;
+  imgSrc: string;
+  modalId: string; // モーダルを開くためのID
+  sourceUrl: string; // 作品の元URL
+};
+
+// ここには「全て」の実績URLを記述します
+const sourceUrls = [
+  'ここに作品ページのURL 1',
+  'ここに作品ページのURL 2',
+  'ここに作品ページのURL 3',
+  'ここに作品ページのURL 4',
+  'ここに作品ページのURL 5',
+  'ここに作品ページのURL 6',
+  // ... 実績が増えたらこのリストに追加してください
+];
+
+// OGP取得処理
+const worksPromises = sourceUrls.map(async (url): Promise<Work | null> => {
+  try {
+    const response = await fetch(url);
+    const html = await response.text();
+    const $ = load(html);
+
+    const title = $('meta[property="og:title"]').attr('content') || 'タイトルが見つかりません';
+    const imgSrc = $('meta[property="og:image"]').attr('content') || '/ogp-default.png';
+    const slug = new URL(url).pathname.split('/').pop() || Date.now().toString();
+    const modalId = `work-modal-${slug}`;
+
+    // Worksページではhrefは外部リンク (sourceUrl)
+    return { href: url, title, imgSrc, modalId, sourceUrl: url };
+
+  } catch (error) {
+    console.error(`Error fetching OGP data for ${url}:`, error);
+    return null;
+  }
+});
+
+const worksResults = await Promise.all(worksPromises);
+// エラーを除外し、型を保証
+const validWorks = worksResults.filter((work): work is Work => work !== null);
+---
+<BaseLayout title="My Portfolio | Works" description="これまでの実績一覧です。">
+
+  <h1 class="text-3xl font-bold mb-8">All Works</h1>
+
+  {/* カード一覧 */}
+  <ul class="grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-8 list-none p-0">
+    {validWorks.map(work => (
+      <Card
+        title={work.title}
+        imgSrc={work.imgSrc}
+        modalTarget={work.modalId}
+        href="#"
+      />
+    ))}
+  </ul>
+
+  {/* モーダル (カードと同じ数だけ生成) */}
+  {validWorks.map(work => (
+    <WorkModal
+      modalId={work.modalId}
+      title={work.title}
+      imgSrc={work.imgSrc}
+      sourceUrl={work.sourceUrl}
+    />
+  ))}
+
+</BaseLayout>

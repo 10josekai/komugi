@@ -1,0 +1,61 @@
+---
+const pathname = Astro.url.pathname;
+import { Icon } from 'astro-icon/components';
+---
+<header class="p-4 md:p-6">
+  <div class="max-w-7xl mx-auto relative flex justify-center items-center">
+    
+    <nav class="bg-white/70 backdrop-blur-md border border-gray-200/80 rounded-full px-3 py-2 shadow-sm">
+      <ul class="flex items-center gap-1 text-sm font-semibold">
+        {/* Home */}
+        <li><a href="/" class:list={[
+          "px-4 py-1.5 rounded-full transition-colors",
+          pathname === "/" ? "bg-black text-white" : "text-gray-700 hover:text-black"
+        ]}>Home</a></li>
+        
+        {/* Works */}
+        <li><a href="/works" class:list={[
+          "px-4 py-1.5 rounded-full transition-colors",
+          pathname.startsWith("/works") ? "bg-black text-white" : "text-gray-700 hover:text-black"
+        ]}>Works</a></li>
+
+        {/* About */}
+        <li><a href="/about" class:list={[
+          "px-4 py-1.5 rounded-full transition-colors",
+          pathname === "/about" ? "bg-black text-white" : "text-gray-700 hover:text-black"
+        ]}>About</a></li>
+        
+        {/* Pricing */}
+        <li><a href="/pricing" class:list={[
+          "px-4 py-1.5 rounded-full transition-colors",
+          pathname === "/pricing" ? "bg-black text-white" : "text-gray-700 hover:text-black"
+        ]}>Pricing</a></li>
+        
+        {/* Contact */}
+        <li><a href="/contact" class:list={[
+          "px-4 py-1.5 rounded-full transition-colors",
+          pathname === "/contact" ? "bg-black text-white" : "text-gray-700 hover:text-black"
+        ]}>Contact</a></li>
+      </ul>
+    </nav>
+    
+{/* 右側のSNSリンク (枠線付きボタン風) */}
+<div class="absolute right-0 hidden md:flex items-center gap-3">
+  {/* Twitter リンク */}
+  <a href="https://twitter.com/（あなたのID）" target="_blank" rel="noopener noreferrer"
+  class="flex items-center gap-2 px-4 py-1.5 border border-gray-300 rounded-full text-gray-600 hover:text-black hover:border-black transition-colors"
+    aria-label="Twitter">
+    <Icon name="lucide:twitter" class="w-4 h-4" />
+    <span class="text-sm font-medium">Twitter</span>
+  </a>
+  {/* Pixiv リンク */}
+  <a href="https://www.pixiv.net/users/（あなたのID）" target="_blank" rel="noopener noreferrer"
+    class="flex items-center gap-2 px-4 py-1.5 border border-gray-300 rounded-full text-gray-600 hover:text-black hover:border-black transition-colors"
+    aria-label="Pixiv">
+    <Icon name="simple-icons:pixiv" class="w-4 h-4" />
+    <span class="text-sm font-medium">Pixiv</span>
+  </a>
+</div>
+
+  </div>
+</header>

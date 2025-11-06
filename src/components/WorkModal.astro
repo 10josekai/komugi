@@ -1,0 +1,79 @@
+---
+// src/components/WorkModal.astro
+import { Icon } from 'astro-icon/components';
+export interface Props {
+  modalId: string;   // このモーダル自体のID
+  title: string;     // 作品タイトル
+  imgSrc: string;    // 作品画像
+  sourceUrl: string; // 外部リンクURL
+}
+const { modalId, title, imgSrc, sourceUrl } = Astro.props;
+---
+<div id={modalId} class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[9998] flex items-center justify-center p-4 transition-opacity duration-300 opacity-0 pointer-events-none">
+  <div class="bg-white rounded-lg shadow-2xl max-w-3xl w-full relative transform scale-95 transition-all duration-300 ease-out max-h-[90vh] flex flex-col"> {/* 高さ制限とflex追加 */}
+
+    {/* ヘッダー */}
+    <div class="flex-shrink-0 flex justify-between items-center p-4 border-b">
+      <h3 class="text-lg font-semibold truncate pr-4">{title}</h3> {/* truncate追加 */}
+      <button data-close-button class="text-gray-400 hover:text-gray-800 text-2xl leading-none">&times;</button>
+    </div>
+
+    {/* 中身 (スクロール可能にする) */}
+    <div class="p-6 overflow-y-auto"> {/* overflow-y-auto追加 */}
+      <img src={imgSrc} alt={title} class="w-full aspect-video object-contain rounded-md mb-6" /> {/* object-containに変更 */}
+      {/* ここに将来的に作品の詳細説明などを追加できます */}
+      {/* <p>ここに作品の説明文...</p> */}
+    </div>
+
+    {/* フッター (外部リンクボタン) */}
+    <div class="flex-shrink-0 p-4 border-t text-right">
+      <a href={sourceUrl} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-gray-800 text-white font-bold py-2 px-5 rounded-lg hover:bg-gray-700 transition-colors">
+        作品を視聴する
+        <Icon name="lucide:external-link" class="w-4 h-4" />
+      </a>
+    </div>
+
+  </div>
+</div>
+
+{/* モーダルを開閉するためのスクリプト (Modal.astroから少し変更) */}
+<script define:vars={{ modalId }}>
+  // モーダルを開閉する関数 (トリガーボタンの部分は削除)
+  function initializeWorkModal() {
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
+
+    const closeButtons = modal.querySelectorAll('[data-close-button]');
+
+    // 閉じる処理
+    const closeModal = () => {
+      const modalContent = modal.querySelector<HTMLElement>(':scope > div');
+      if (modalContent) modalContent.classList.add('scale-95');
+      setTimeout(() => { modal.classList.add('opacity-0', 'pointer-events-none'); }, 300);
+    };
+    // 開く処理 (外部から呼び出されるように関数化)
+    const openModal = () => {
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        const modalContent = modal.querySelector<HTMLElement>(':scope > div');
+        if (modalContent) modalContent.classList.remove('scale-95');
+      }, 10);
+    };
+
+    // data-modal-triggerを持つ要素にクリックイベントを追加
+    document.querySelectorAll(`[data-modal-trigger="${modalId}"]`).forEach(trigger => {
+      trigger.addEventListener('click', openModal);
+    });
+
+    // 閉じるボタン
+    closeButtons.forEach(btn => btn.addEventListener('click', closeModal));
+    // 背景クリック
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    // Escキー
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal.classList.contains('pointer-events-none')) closeModal(); });
+  }
+
+  // View Transitions 対応
+  document.addEventListener('astro:page-load', initializeWorkModal);
+  initializeWorkModal(); 
+</script>

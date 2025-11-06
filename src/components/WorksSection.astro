@@ -1,0 +1,78 @@
+---
+import Card from './Card.astro';
+import { load } from 'cheerio';
+
+export interface Props {
+  mode?: 'summary' | 'full';
+}
+const { mode = 'full' } = Astro.props;
+
+// ★★★ 1. workオブジェクトの「形」をTypeScriptに教えます ★★★
+type Work = {
+  href: string;
+  title: string;
+  imgSrc: string;
+};
+
+// ここには「全て」の実績URLを記述します
+const allSourceUrls = [
+  'https://rplay.live/play/68ae4e5e544101621e987c27',
+  'https://youtu.be/sSXCkz3SLrI',
+  'https://rplay.live/play/68a07e5665f91176751d33f2',
+  'https://youtu.be/nytW8afFCr0',
+  'https://youtu.be/8VBCv-rw28U',
+  'https://www.dlsite.com/home/work/=/product_id/RJ394325.html',
+  // ... 実績が増えたらこのリストに追加してください
+];
+
+// modeが'summary'なら4つだけ、'full'なら全ての実績を取得します
+const sourceUrls = mode === 'summary' ? allSourceUrls.slice(0, 4) : allSourceUrls;
+
+// ★★★ 2. OGP取得処理を、より安全な形に修正します ★★★
+const worksPromises = sourceUrls.map(async (url): Promise<Work | null> => {
+    try {
+      const response = await fetch(url);
+      const html = await response.text();
+      const $ = load(html);
+
+      const title = $('meta[property="og:title"]').attr('content') || 'タイトルが見つかりません';
+      const imgSrc = $('meta[property="og:image"]').attr('content') || '/ogp-default.png';
+      
+      // Home(summary)ではサイト内詳細ページへ、Works(full)では元サイトへ直接リンクします
+      const slug = new URL(url).pathname.split('/').pop();
+      const href = mode === 'summary' ? `/works/${slug}` : url;
+
+      return { href, title, imgSrc };
+
+    } catch (error) {
+      console.error(`Error fetching OGP data for ${url}:`, error);
+      return null;
+    }
+});
+
+const worksResults = await Promise.all(worksPromises);
+// ★★★ 3. フィルター処理で、型が正しいことを保証します ★★★
+const validWorks = worksResults.filter((work): work is Work => work !== null);
+---
+
+<div id="works" class="py-16 md:py-24">
+  <h2 class="text-3xl font-bold mb-8 text-center">Works</h2>
+  <ul class="grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-8 list-none p-0">
+    {validWorks.map(work => (
+      <Card
+        href={work.href}
+        title={work.title}
+        imgSrc={work.imgSrc}
+      />
+    ))}
+  </ul>
+
+  {/* modeが'summary'の時だけ、「View All Works」ボタンを表示します */}
+  {mode === 'summary' && (
+    <div class="text-center mt-12">
+      <a href="/works" class="inline-block bg-gray-800 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-700 transition-colors">
+        View All Works &rarr;
+      </a>
+    </div>
+  )}
+</div>

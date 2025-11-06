@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout
+  title="My Portfolio | Thank You"
+  description="お問い合わせありがとうございます。"
+>
+  <div class="flex flex-col items-center justify-center text-center py-24">
+    {/* アイコン（任意） */}
+    <svg class="w-16 h-16 text-green-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+    {/* メインメッセージ */}
+    <h1 class="text-3xl font-bold mb-2">お問い合わせありがとうございます！</h1>
+    <p class="text-lg text-gray-600 mb-8">
+      内容を確認の上、折り返しご連絡いたします。
+    </p>
+    {/* ホームに戻るボタン */}
+    <a href="/" class="inline-block bg-gray-800 text-white font-bold py-3 px-8 rounded-lg hover:bg-gray-700 transition-colors">
+      ホームに戻る
+    </a>
+  </div>
+</BaseLayout>

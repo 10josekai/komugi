@@ -1,0 +1,175 @@
+---
+import { Icon } from 'astro-icon/components';
+---
+<div id="contact" class="py-16 md:py-24">
+  <div class="text-center">
+    <h2 class="text-3xl font-bold mb-4 text-gray-900">Contact</h2>
+    <p class="text-gray-600">お問い合わせはこちらからどうぞ。</p>
+  </div>
+
+  {/* フォーム切り替えボタン */}
+  <div class="text-center mt-8 mb-4">
+    <button id="toggle-form-btn" 
+    class="group inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-900 border border-gray-300 rounded-full px-4 py-2 transition-colors duration-200 ease-in-out">
+<span id="toggle-form-text">→ 詳細入力フォームへ</span>
+<Icon name="lucide:chevrons-up-down" id="toggle-form-icon" class="w-4 h-4 transition-transform duration-300 ease-in-out" />
+<path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h18" />
+</svg>
+</button>
+    </button>
+  </div>
+
+  {/* --- 簡易フォーム (デフォルト表示) --- */}
+  <form id="simple-form" action="https://formspree.io/f/xeorvkgb" method="POST" class="max-w-lg mx-auto">
+    <input type="hidden" name="_cc" value="">
+    <div class="grid grid-cols-1 gap-y-6">
+      {/* 質問1: ご依頼の種類 */}
+      <div>
+        <label class="block text-sm font-medium text-gray-700">ご依頼の種類</label>
+        <select name="request_type" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2">
+          <option value="">選択してください</option>
+          <option value="シナリオ制作">シナリオ制作</option>
+          <option value="プロット相談">プロット相談</option>
+          <option value="その他">その他</option>
+        </select>
+      </div>
+      {/* 質問2: ご予算 */}
+      <div>
+        <label class="block text-sm font-medium text-gray-700">ご予算の規模（任意）</label>
+        <select name="budget" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2">
+          <option value="">選択してください</option>
+          <option value="〜5万円">〜5万円</option>
+          <option value="5〜10万円">5〜10万円</option>
+          <option value="10万円〜">10万円〜</option>
+          <option value="相談したい">相談したい</option>
+        </select>
+      </div>
+      {/* 質問3: メールアドレス */}
+      <div>
+        <label for="simple-email" class="block text-sm font-medium text-gray-700">ご連絡先メールアドレス</label>
+        <input type="email" name="_replyto" id="simple-email" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2">
+      </div>
+      {/* 質問4: その他 */}
+      <div>
+        <label for="simple-message" class="block text-sm font-medium text-gray-700">その他（任意）</label>
+        <textarea name="message" id="simple-message" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2"></textarea>
+      </div>
+
+      {/* チェックボックスを追加*/}
+      <div class="flex items-center">
+        <input id="simple-copy" name="send_copy" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+        <label for="simple-copy" class="ml-2 block text-sm text-gray-900">送信内容のコピーを自分にも送る</label>
+      </div>
+      <div>
+        <button type="submit" class="inline-flex justify-center rounded-md border border-transparent bg-gray-800 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-700">送信する</button>
+      </div>
+    </div>
+  </form>
+
+  {/* --- 詳細フォーム (デフォルト非表示) --- */}
+  <form id="detailed-form" action="https://formspree.io/f/xeorvkgb" method="POST" class="max-w-lg mx-auto hidden"> 
+    <input type="hidden" name="_cc" value="">
+    <div class="grid grid-cols-1 gap-y-6">
+
+      {/* お名前 */}
+      <div>
+        <label for="name" class="block text-sm font-medium text-gray-700">お名前</label>
+        <input type="text" name="name" id="name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2">
+      </div>
+
+      {/* メールアドレス */}
+      <div>
+        <label for="email" class="block text-sm font-medium text-gray-700">メールアドレス</label>
+        <input type="email" name="_replyto" id="email" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2">
+      </div>
+
+      {/* メッセージ */}
+      <div>
+        <label for="message" class="block text-sm font-medium text-gray-700">メッセージ</label>
+        <textarea name="message" id="message" required rows="6" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2"></textarea>
+      </div>
+
+      {/* チェックボックスを追加 */}
+      <div class="flex items-center">
+        <input id="simple-copy" name="send_copy" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+        <label for="simple-copy" class="ml-2 block text-sm text-gray-900">送信内容のコピーを自分にも送る</label>
+      </div>
+
+      {/* 送信ボタン */}
+      <div>
+        <button type="submit" class="inline-flex justify-center rounded-md border border-transparent bg-gray-800 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-700">送信する</button>
+      </div>
+    </div>
+  </form>
+
+  {/* フォーム切り替え用スクリプト */}
+  <script>
+    // View Transitions対応: ページ読み込み/遷移完了時に実行
+    document.addEventListener('astro:page-load', () => {
+      // --- フォーム切り替えロジック ---
+      const toggleBtn = document.getElementById('toggle-form-btn');
+      const simpleForm = document.getElementById('simple-form');
+      const detailedForm = document.getElementById('detailed-form');
+      const toggleText = document.getElementById('toggle-form-text');
+      const toggleIcon = document.getElementById('toggle-form-icon') as HTMLElement | null; // 型を明示
+      let isSimpleMode = true; // 初期状態は簡易モード
+
+      // 要素が全て見つかった場合のみイベントリスナーを設定
+      if (toggleBtn && simpleForm && detailedForm) {
+      const toggleText = document.getElementById('toggle-form-text');
+      const toggleIcon = document.getElementById('toggle-form-icon') as HTMLElement | null; 
+
+      toggleBtn.addEventListener('click', () => {
+        isSimpleMode = !isSimpleMode; 
+        if (isSimpleMode) {
+          // 簡易モード表示
+          simpleForm.classList.remove('hidden');
+          detailedForm.classList.add('hidden');
+          if (toggleText) toggleText.textContent = '→ 詳細入力フォームへ';
+          if (toggleIcon) toggleIcon.style.transform = 'rotate(0deg)'; // ← 回転を0度に戻す
+        } else {
+          // 詳細モード表示
+          simpleForm.classList.add('hidden');
+          detailedForm.classList.remove('hidden');
+          if (toggleText) toggleText.textContent = '← 簡易フォームに戻る';
+          if (toggleIcon) toggleIcon.style.transform = 'rotate(180deg)'; // ← アイコンを180度回転
+        }
+      });
+    }
+
+      // --- フォーム送信ロジック ---
+      async function handleFormSubmit(event: SubmitEvent) {
+        event.preventDefault(); 
+        if (!(event.target instanceof HTMLFormElement)) return; 
+        const form = event.target; 
+        const data = new FormData(form);
+        try {
+          const response = await fetch(form.action, { 
+            method: form.method, body: data, headers: { 'Accept': 'application/json' }
+          });
+          if (response.ok) {
+            window.location.href = '/thanks'; 
+          } else {
+            const responseData = await response.json(); 
+            if (responseData && Array.isArray(responseData.errors)) {
+              alert(responseData.errors.map((error: { message: string }) => error.message).join(", "));
+            } else { alert('メッセージの送信に失敗しました。'); }
+          }
+        } catch (error: unknown) { 
+          console.error('送信エラー:', error);
+          let errorMessage = '不明なエラーが発生しました。';
+          if (typeof error === 'object' && error !== null && 'message' in error && typeof error.message === 'string') {
+            errorMessage = `エラーが発生しました: ${error.message}`;
+          } else if (error instanceof Error) {
+            errorMessage = `エラーが発生しました: ${error.message}`;
+          } else { errorMessage = `エラーが発生しました: ${String(error)}`; }
+          alert(errorMessage);
+        }
+      }
+
+      // 両方のフォームにイベントリスナーを追加
+      if (simpleForm) simpleForm.addEventListener('submit', handleFormSubmit);
+      if (detailedForm) detailedForm.addEventListener('submit', handleFormSubmit);
+    }); // astro:page-load の閉じ括弧
+  </script>
+</div>

@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { load } from 'cheerio';
+
+// このページがどの実績のページなのかを Astro に教えるための関数です
+export async function getStaticPaths() {
+  // HomeやWorksと同じように、まずは元ページのURLリストを定義します
+  const sourceUrls = [
+    'https://rplay.live/play/68ae4e5e544101621e987c27',
+    'https://youtu.be/sSXCkz3SLrI',
+    'https://rplay.live/play/68a07e5665f91176751d33f2',
+    'https://youtu.be/nytW8afFCr0',
+    // ... ここには「全て」の実績URLを忘れずに記述してください
+  ];
+
+  // 各URLからOGP情報を取得し、ページ生成用のデータを作成します
+  const pages = await Promise.all(
+    sourceUrls.map(async (url) => {
+      try {
+        const response = await fetch(url);
+        const html = await response.text();
+        const $ = load(html);
+
+        const title = $('meta[property="og:title"]').attr('content') || 'タイトルが見つかりません';
+        const imgSrc = $('meta[property="og:image"]').attr('content') || '/ogp-default.png';
+        const description = $('meta[property="og:description"]').attr('content') || '説明文が見つかりません';
+
+        // URLからユニークなID部分を取得します (例: 68ae4e5e544101621e987c27)
+        const slug = new URL(url).pathname.split('/').pop();
+
+        return {
+          params: { slug }, // これがページのURL (/works/xxxx) になります
+          props: { work: { title, imgSrc, description, sourceUrl: url } }, // ページに渡すためのデータです
+        };
+      } catch (error) {
+        console.error(`Error fetching page data for ${url}:`, error);
+        return null;
+      }
+    })
+  );
+
+  // エラーでnullになったものを除外します
+  return pages.filter(p => p !== null);
+}
+
+// Astroから渡された実績データを取得します
+const { work } = Astro.props;
+---
+<BaseLayout title={work.title} description={work.description} ogImage={work.imgSrc}>
+  <div>
+    {/* 作品のサムネイル画像 */}
+    <img src={work.imgSrc} alt={work.title} class="w-full aspect-video object-cover rounded-lg shadow-lg mb-8" />
+
+    {/* 作品タイトル */}
+    <h1 class="text-3xl md:text-4xl font-bold mb-4">{work.title}</h1>
+
+    {/* OGPから取得した作品の説明文 */}
+    <p class="text-lg text-gray-600 mb-8">{work.description}</p>
+
+    {/* 外部サイトへのリンクボタン */}
+    <a href={work.sourceUrl} target="_blank" rel="noopener noreferrer" class="inline-block bg-gray-800 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-700 transition-colors">
+      この作品を視聴する &rarr;
+    </a>
+  </div>
+</BaseLayout>

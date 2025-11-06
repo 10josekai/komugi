@@ -1,0 +1,85 @@
+---
+// Modal.astro
+export interface Props {
+  triggerId: string; // このモーダルを開くボタンのID
+  modalId: string;   // このモーダル自体のID
+  title: string;     // モーダルのタイトル
+}
+
+const { triggerId, modalId, title } = Astro.props;
+---
+
+{/* モーダルの本体 */}
+<div id={modalId} class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9998] flex items-center justify-center p-4 transition-opacity duration-300 opacity-0 pointer-events-none">
+  <div class="bg-white rounded-lg shadow-2xl max-w-2xl w-full relative transform scale-95 transition-transform duration-300">
+
+    {/* ヘッダー */}
+    <div class="flex justify-between items-center p-4 border-b">
+      <h3 class="text-lg font-semibold">{title}</h3>
+      <button data-close-button class="text-gray-400 hover:text-gray-800">&times;</button>
+    </div>
+
+    {/* 中身（ここに料金表や台本が入る） */}
+    <div class="p-6 prose max-w-none">
+      <slot />
+    </div>
+
+  </div>
+</div>
+
+{/* モーダルを開閉するためのスクリプト */}
+<script define:vars={{ triggerId, modalId }}>
+  // モーダルを開閉する関数
+  function initializeModal() {
+    const trigger = document.getElementById(triggerId);
+    const modal = document.getElementById(modalId);
+    
+    // 要素が見つからない場合は処理を中断
+    if (!trigger || !modal) {
+      // console.error(`Modal elements not found for triggerId: ${triggerId}, modalId: ${modalId}`);
+      return; 
+    }
+    
+    const closeButtons = modal.querySelectorAll('[data-close-button]');
+
+    // 開くボタンの処理
+    trigger.addEventListener('click', () => {
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+      // アニメーションのため、わずかに遅延させてクラスを削除
+      setTimeout(() => {
+        const modalContent = modal.querySelector<HTMLElement>(':scope > div'); // 直接の子divを取得
+        if (modalContent) modalContent.classList.remove('scale-95');
+      }, 10); // 10ミリ秒の遅延
+    });
+
+    // 閉じる処理
+    const closeModal = () => {
+      const modalContent = modal.querySelector<HTMLElement>(':scope > div');
+      if (modalContent) modalContent.classList.add('scale-95');
+      
+      // アニメーションが終わるのを待ってから非表示にする
+      setTimeout(() => {
+        modal.classList.add('opacity-0', 'pointer-events-none');
+      }, 300); // transition duration-300 に合わせる
+    };
+
+    // 閉じるボタン
+    closeButtons.forEach(btn => btn.addEventListener('click', closeModal));
+    // 背景クリック
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+    // Escキー
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !modal.classList.contains('pointer-events-none')) {
+        closeModal();
+      }
+    });
+  }
+
+  // View Transitions 対応: ページ読み込み/遷移完了時に初期化
+  document.addEventListener('astro:page-load', initializeModal);
+  
+  // View Transitions がない場合の初回読み込み時にも初期化
+  initializeModal(); 
+</script>

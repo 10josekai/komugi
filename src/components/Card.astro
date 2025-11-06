@@ -1,0 +1,35 @@
+---
+export interface Props {
+	title: string;
+	href: string; 
+	imgSrc: string;
+	modalTarget?: string;
+}
+const { href, title, imgSrc, modalTarget } = Astro.props;
+---
+<li class="group aspect-video bg-gray-200 rounded-lg overflow-hidden relative shadow-md transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1">
+  
+  <img 
+    src={imgSrc} 
+    alt={title} 
+    class="absolute inset-0 w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
+  />
+  
+  {/* ▼▼▼ 条件分岐で a または button を表示 ▼▼▼ */}
+  {modalTarget ? (
+    <button type="button" data-modal-trigger={modalTarget} class="absolute inset-0 w-full h-full cursor-pointer">
+      <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+      <h2 class="absolute bottom-0 left-0 p-4 text-white font-semibold text-lg">{title}</h2>
+    </button>
+  ) : (
+    <a href={href} target="_blank" rel="noopener noreferrer" class="absolute inset-0 w-full h-full cursor-pointer">
+      <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+      <h2 class="absolute bottom-0 left-0 p-4 text-white font-semibold text-lg">{title}</h2>
+    </a>
+  )}
+
+</li>
+
+<style>
+  button[data-modal-trigger] { appearance: none; background: none; border: none; padding: 0; font: inherit; color: inherit; text-align: inherit; }
+</style>

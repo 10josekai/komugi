@@ -1,0 +1,38 @@
+---
+import { Icon } from 'astro-icon/components';
+---
+<div id="about" class="py-16 md:py-24 flex justify-center items-center"> {/* 外側の背景を削除 */}
+  {/* カード本体: 白背景、控えめな影、少し大きめのパディング */}
+  <div class="bg-white border border-gray-200 rounded-xl shadow-lg p-8 md:p-10 max-w-3xl w-full flex flex-col md:flex-row items-center gap-6 md:gap-10"> {/* rounded-xl, shadow-lg, gap-10 */}
+    
+    {/* 左カラム: アイコン (真円に戻す) */}
+    <div class="flex-shrink-0">
+      <img 
+        src="/profile-icon.jpg" 
+        alt="プロフィールアイコン" 
+        class="w-32 h-32 md:w-36 md:h-36 rounded-full object-cover block"
+        />
+    </div>
+
+    {/* 右カラム: テキスト情報 (余白調整) */}
+    <div class="text-center md:text-left flex-grow"> {/* flex-grow追加 */}
+      <h3 class="text-base font-semibold text-indigo-600 mb-1">Scenario Writer</h3> {/* 肩書きの色変更 */}
+      <h2 class="text-3xl md:text-4xl font-bold mb-3">こむぎ</h2> {/* サイズ調整 */}
+      <p class="text-gray-600 leading-relaxed mb-5"> {/* leading-relaxed追加 */}
+        今から考える
+      </p>
+      {/* SNSアイコン (Font Awesomeなどのアイコンフォントを使うとよりモダンになりますが、まずはテキストで) */}
+{/* SNSアイコン */}
+<div class="flex justify-center md:justify-start gap-5 mb-5 text-gray-500">
+  <a href="https://twitter.com/10josekai" target="_blank" rel="noopener noreferrer" class="hover:text-gray-900 transition-colors" aria-label="Twitter">
+    <Icon name="lucide:twitter" class="w-6 h-6" /> {/* サイズを少し大きく */}
+  </a>
+  <a href="https://www.pixiv.net/users/110654349" target="_blank" rel="noopener noreferrer" class="hover:text-gray-900 transition-colors" aria-label="Pixiv">
+    <Icon name="simple-icons:pixiv" class="w-6 h-6" /> {/* サイズを少し大きく */}
+  </a>
+</div>
+      </div>
+    </div>
+
+  </div>
+</div>
